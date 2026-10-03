@@ -130,7 +130,9 @@ OVERRIDES = {("taiwan-100", "劍山"): {"qid": None, "name_en": "Jian Mountain"}
              ("hyakumeizan", "Q3695989"): {"name_en": "Mount Ōmine"},
              ("hyakumeizan", "Q3075593"): {"name_en": "Mount Hachimantai"},
              ("hyakumeizan", "Q11608718"): {"name_en": "Mount Utsukushigahara"},
-             ("hyakumeizan", "Q3695492"): {"name_en": "Mount Ainodake"}}
+             ("hyakumeizan", "Q3695492"): {"name_en": "Mount Ainodake"},
+             ("eight-thousanders", "Q187138"): {"name_en": "Gasherbrum I"},
+             ("eight-thousanders", "Q16466"): {"name_en": "Annapurna I"}}
 
 
 def canon(s):
@@ -381,8 +383,8 @@ def main():
             labels = m.get("wd", {}).get("labels", {})
             name = m.get("name") if lid not in ("munros", "hyakumeizan", "eight-thousanders") \
                 and not lid.startswith("seven") else None
-            if lid == "munros" and m.get("name"):
-                name = m["name"]
+            if lid == "munros" and m.get("wp_name"):
+                name = m["wp_name"]  # SMC/DoBIH naming as in the list table
             name = name or labels.get("en") or (p["name"] if p else None) or m.get("title")
             name = re.sub(r"\s*\((mountain|Lake District|Colorado|California|peak)\)$", "", name or "")
             local = None

@@ -1,0 +1,19 @@
+Toposcope peak data
+
+Files: peaks/p_*.tsv.z, peaks/index.json, bundle/peaks_major.tsv.z,
+bundle/lists.json
+
+Contains information from OpenStreetMap (https://www.openstreetmap.org),
+which is made available under the Open Database License (ODbL) 1.0
+(https://opendatacommons.org/licenses/odbl/1-0/).
+© OpenStreetMap contributors.
+
+This derived database is made available under the Open Database License
+(ODbL) 1.0: https://opendatacommons.org/licenses/odbl/1-0/
+Any rights in individual contents of the database are licensed under the
+Database Contents License: https://opendatacommons.org/licenses/dbcl/1-0/
+
+Peak-list membership, names and heights in bundle/lists.json come from
+Wikidata (CC0 1.0, https://www.wikidata.org/wiki/Wikidata:Licensing).
+
+The scripts that build these files from OpenStreetMap are in tools/.

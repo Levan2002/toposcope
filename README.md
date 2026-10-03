@@ -3,7 +3,7 @@
 Help, privacy and data pages for **Toposcope**, the iPhone mountain identifier (https://levan2002.github.io/toposcope/).
 
 ## Peak database (ODbL)
-The releases of this repository (tag `peaks-v1` and later) hold Toposcope's peak database: every named
+`docs/data/peaks-v1/` (served at https://levan2002.github.io/toposcope/data/peaks-v1/) holds Toposcope's peak database: every named
 `natural=peak` / `natural=volcano` node from OpenStreetMap, one raw-DEFLATE-compressed, tab-separated file per
 5° × 5° cell (`p_<latIdx>_<lonIdx>.tsv.z`, latIdx = floor((lat+90)/5), lonIdx = floor((lon+180)/5)), plus
 `peaks_major.tsv.z` (notable peaks worldwide), `lists.json` (peak lists) and `index.json`.

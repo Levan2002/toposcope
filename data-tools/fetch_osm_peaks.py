@@ -124,6 +124,20 @@ def fetch(server, t, timeout_s):
     return raw, len(d.get("elements", []))
 
 
+def cached_boxes():
+    out = []
+    for fn in os.listdir(CACHE):
+        if fn.endswith(".json.gz"):
+            out.append(tuple(float(x) for x in fn[:-8].split("_")[1:5]))
+    return out
+
+
+def covered(t, boxes=None):
+    boxes = cached_boxes() if boxes is None else boxes
+    return any(b[0] <= t[0] and b[1] <= t[1] and b[2] >= t[2] and b[3] >= t[3]
+               for b in boxes)
+
+
 def worker(server, q, args, stats):
     fails = 0
     while True:
@@ -133,7 +147,7 @@ def worker(server, q, args, stats):
             if stats["pending"] == 0:
                 return
             continue
-        if os.path.exists(cache_path(t)):
+        if os.path.exists(cache_path(t)) or covered(t):
             bump(stats, "pending", -1)
             continue
         if os.path.exists(split_path(t)):
@@ -187,6 +201,8 @@ def main():
     ap.add_argument("--pause", type=float, default=2.0)
     ap.add_argument("--timeout", type=int, default=240)
     ap.add_argument("--step", type=float, default=10.0)
+    ap.add_argument("--coarse-polar", action="store_true",
+                    help="use 30x30 boxes south of 30S and north of 60N")
     ap.add_argument("--tiles", default="",
                     help="only these boxes, 's,w,n,e;s,w,n,e' (priority runs)")
     args = ap.parse_args()
@@ -202,6 +218,20 @@ def main():
         lat += st
     # Process land-heavy mid latitudes first (just ordering; all tiles run).
     tiles.sort(key=lambda t: abs(t[0] + st / 2 - 35))
+    if args.coarse_polar:
+        # sparse latitudes (< -30, >= 60): 30x30 boxes unless already done
+        boxes = cached_boxes()
+        dense = [t for t in tiles if -30 <= t[0] < 60]
+        coarse = []
+        for la in (-90.0, -60.0, 60.0):
+            for lo in range(-180, 180, 30):
+                big = (la, float(lo), la + 30, float(lo) + 30)
+                subs = [t for t in tiles if t[0] >= big[0] and t[2] <= big[2]
+                        and t[1] >= big[1] and t[3] <= big[3]]
+                if all(covered(x, boxes) for x in subs):
+                    continue
+                coarse.append(big)
+        tiles = coarse + dense
     if args.tiles:
         tiles = [tuple(float(v) for v in b.split(",")) for b in args.tiles.split(";") if b]
     q = queue.Queue()

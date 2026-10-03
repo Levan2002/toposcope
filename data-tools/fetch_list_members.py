@@ -445,6 +445,7 @@ def main():
         if w:
             m.update({k: w[k] for k in ("title", "ref_ele", "ref_lat",
                                         "ref_lon", "gridref") if w.get(k) is not None})
+            m["wp_name"] = w["name"]
     # Wikipedia sometimes links a Munro row to its massif article (e.g.
     # "Liathach - Spidean a' Choire Leith" -> Liathach). Pair the remaining
     # rows with Wikidata items by position (grid ref vs P625, < 1.5 km).
@@ -469,7 +470,7 @@ def main():
             wp_by_q[m["qid"]] = x
             m.update({k: x[k] for k in ("ref_ele", "ref_lat", "ref_lon", "gridref")
                       if x.get(k) is not None})
-            m["wp_row_name"] = x["name"]
+            m["wp_name"] = x["name"]
     munro_check = {"wikipedia_rows": len(mu_wp),
                    "wikidata_items": len(lists["munros"]),
                    "wd_not_in_wp": [m["qid"] for m in lists["munros"] if m["qid"] not in wp_by_q],
